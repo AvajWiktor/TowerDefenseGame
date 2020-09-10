@@ -1,17 +1,23 @@
 #pragma once
 #include "Mob.h"
-#include "Map.h"
+#include "MapField.h"
+
 class SzczerbiakBagienny :
     public Mob
 {
 	
-	public:
-		SzczerbiakBagienny(Vector2f position) {
+public:
+		SzczerbiakBagienny(Vector2f position, int &t) {
 
+			timer_ = &t;
 			setTex();
 			position_ = position;
 			monster_.setPosition(position_);
-			hp_ = 80;
+			
+			lvl_ = 1 + *timer_ / 600;
+			
+			gold_ = lvl_;
+			hp_ = lvl_*50;
 		}
 		~SzczerbiakBagienny() {
 
@@ -38,8 +44,16 @@ class SzczerbiakBagienny :
 			if (hp_ <= 0) return true;
 			else return false;
 		}
+		int getHp() {
+			return hp_;
+		}
+		int getGold() {
+			return gold_;
+		}
 		void animate(int instruction, Vector2f pos, Sprite s) {
-
+			
+			
+			
 			if (colision(s)) {
 
 
@@ -47,7 +61,7 @@ class SzczerbiakBagienny :
 				case 4: {
 					if ((monster_.getPosition().x > pos.x - 1) && (monster_.getPosition().x < pos.x + 1)) {
 						monster_.setPosition(pos.x, monster_.getPosition().y);
-						monster_.setRotation(270);
+						monster_.setRotation(90);
 						velocity_ = Vector2f(0.0, -1.0);
 
 					}
@@ -57,7 +71,7 @@ class SzczerbiakBagienny :
 
 					if ((monster_.getPosition().x > pos.x - 1) && (monster_.getPosition().x < pos.x + 1)) {
 						monster_.setPosition(pos.x, monster_.getPosition().y);
-						monster_.setRotation(90);
+						monster_.setRotation(270);
 						velocity_ = Vector2f(0.0, 1.0);
 
 					}
@@ -66,7 +80,7 @@ class SzczerbiakBagienny :
 				case 6: {
 					if ((monster_.getPosition().y > pos.y - 1) && (monster_.getPosition().y < pos.y + 1)) {
 						monster_.setPosition(monster_.getPosition().x, pos.y);
-						monster_.setRotation(0);
+						monster_.setRotation(180);
 						velocity_ = Vector2f(1.0, 0.0);
 
 					}
@@ -75,7 +89,7 @@ class SzczerbiakBagienny :
 				case 7: {
 					if ((monster_.getPosition().y > pos.y - 1) && (monster_.getPosition().y < pos.y + 1)) {
 						monster_.setPosition(monster_.getPosition().x, pos.y);
-						monster_.setRotation(180);
+						monster_.setRotation(0);
 						velocity_ = Vector2f(-1.0, 0.0);
 
 					}
@@ -102,20 +116,26 @@ class SzczerbiakBagienny :
 			}
 			else return 0;
 		}
+		Sprite getSprite() {
+			return monster_;
+}
 		Vector2f getPos() {
 
 			return monster_.getPosition();
 		}
 	private:
 
+		bool blok_ = true;
+		int* timer_;
 		void setTex() {
-			mt1_.loadFromFile("grafiki/szmob1.png");
-			mt2_.loadFromFile("grafiki/szmob2.png");
-			mt3_.loadFromFile("grafiki/szmob3.png");
-			mt4_.loadFromFile("grafiki/szmob4.png");
+			mt1_.loadFromFile("grafiki/mob1.png");
+			mt2_.loadFromFile("grafiki/mob2.png");
+			mt3_.loadFromFile("grafiki/mob3.png");
+			mt4_.loadFromFile("grafiki/mob4.png");
 			monster_.setTexture(mt1_);
 			monster_.setOrigin(mt1_.getSize().x / 2, mt1_.getSize().y / 2);
 			monster_.setScale(43.0/145.0, 48.0/144.0);
+			monster_.rotate(90);
 
 
 		}
@@ -150,12 +170,13 @@ class SzczerbiakBagienny :
 			}
 			}
 		}
+		int lvl_=1;
 		int hp_;
 		int texnr_ = 1;
 		Vector2f velocity_;
 		Vector2f position_;
 		Sprite monster_;
 		Texture mt1_, mt2_, mt3_, mt4_;
-		int gold_;
+		int gold_ = 1;
 };
 
