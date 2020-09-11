@@ -54,19 +54,21 @@ public:
     void setPosition(Vector2f p) {
         _Sprite.setPosition(p);
     }
-    void shoot(SzczerbiakBagienny &mob,Vector2f p, list<Bullet*>& b) {
-        Vector2f AimDir = p - _Sprite.getPosition();
-        Vector2f AimDirNorm = AimDir / sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2));
-        float angle = atan2(AimDir.y, AimDir.x) * 180 / 3.14;
-        cout << "kat: " << angle << endl;
-        _Sprite.setRotation(angle);
-        if (_CanShoot) {
-            if ((*_Timer % int(60 / _AttackSpeed) == 0) && _RangeCircle.getGlobalBounds().contains(p)) {
+    void shoot(SzczerbiakBagienny& mob, Vector2f p, list<Bullet*>& b) {
+        if (_RangeCircle.getGlobalBounds().contains(p)) {
 
+            if (_CanShoot) {
+                if ((*_Timer % int(60 / _AttackSpeed) == 0)) {
+                    Vector2f AimDir = mob.getPos() - _Sprite.getPosition();
+                    Vector2f AimDirNorm = AimDir / sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2));
+                    float angle = atan2(AimDir.y, AimDir.x) * 180 / 3.14;
 
-                Bullet* bullet = new Bullet(mob, _Sprite.getPosition(), AimDirNorm, *_Timer, _Type, _Dmg);
-                b.push_back(bullet);
-                _CanShoot = false;
+                    _Sprite.setRotation(angle);
+
+                    Bullet* bullet = new Bullet(mob, _Sprite.getPosition(), AimDirNorm, *_Timer, _Type, _Dmg);
+                    b.push_back(bullet);
+                    _CanShoot = false;
+                }
             }
         }
     }
@@ -83,8 +85,8 @@ private:
     Sprite _Sprite;
     Texture _Texture;
     CircleShape _RangeCircle;
-    int _Dmg = 50;
-    float _AttackSpeed = 2.0;
+    int _Dmg = 5;
+    float _AttackSpeed = 5.0;
 
 };
 

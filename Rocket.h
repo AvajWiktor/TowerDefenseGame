@@ -53,18 +53,20 @@ public:
         _Sprite.setPosition(p);
     }
     void shoot(SzczerbiakBagienny& mob, Vector2f p, list<Bullet*>& b) {
-        Vector2f AimDir = p - _Sprite.getPosition();
-        Vector2f AimDirNorm = AimDir / sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2));
-        float angle = atan2(AimDir.y, AimDir.x) * 180 / 3.14;
-        cout << "kat: " << angle << endl;
-        _Sprite.setRotation(angle);
-        if (_CanShoot) {
-            if ((*_Timer % int(60 / _AttackSpeed) == 0) && _RangeCircle.getGlobalBounds().contains(p)) {
+        if (_RangeCircle.getGlobalBounds().contains(p)) {
 
+            if (_CanShoot) {
+                if ((*_Timer % int(60 / _AttackSpeed) == 0)) {
+                    Vector2f AimDir = mob.getPos() - _Sprite.getPosition();
+                    Vector2f AimDirNorm = AimDir / sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2));
+                    float angle = atan2(AimDir.y, AimDir.x) * 180 / 3.14;
 
-                Bullet* bullet = new Bullet(mob, _Sprite.getPosition(), AimDirNorm, *_Timer, _Type, _Dmg);
-                b.push_back(bullet);
-                _CanShoot = false;
+                    _Sprite.setRotation(angle);
+
+                    Bullet* bullet = new Bullet(mob, _Sprite.getPosition(), AimDirNorm, *_Timer, _Type, _Dmg);
+                    b.push_back(bullet);
+                    _CanShoot = false;
+                }
             }
         }
     }

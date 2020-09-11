@@ -3,11 +3,12 @@
 #include "Gun.h"
 #include "Rocket.h"
 #include "Plasma.h"
-#include <SFML/Audio.hpp>
+
 class Interface
 {
 public:
-	Interface(int hp, string fontDirection, RenderWindow &w, int &t) {
+	Interface(int hp, string fontDirection, RenderWindow &w, int &t, bool &b) {
+		_B = &b;
 		_Timer = &t;
 		_Window = &w;
 		_PlayerHp = hp;
@@ -25,9 +26,7 @@ public:
 		_QuitButtonSprite.setTexture(_QuitButtonTextureOff);
 		_QuitButtonSprite.setOrigin(_QuitButtonTextureOff.getSize().x/2.0, _QuitButtonTextureOff.getSize().y/2.0);
 		_QuitButtonSprite.setPosition(1507, 28);
-		//_SoundBuffer.loadFromFile("nuta.ogg");
-		//_Sound.setBuffer(_SoundBuffer);
-		//_Sound.play();
+		
 		
 		_BackGroundTexture.loadFromFile("grafiki/tlo1.png");
 		_BackGroundSprite.setTexture(_BackGroundTexture);
@@ -123,7 +122,7 @@ public:
 				_QuitButtonSprite.setTexture(_QuitButtonTextureOn);
 				_QuitButtonSprite.setScale(1.2, 1.2);
 				if (Mouse::isButtonPressed(Mouse::Left)) {
-					_Window->close();
+					*_B=true;
 
 				}
 			}
@@ -202,9 +201,8 @@ private:
 
 
 	}
-	Sound _Sound;
-	SoundBuffer _SoundBuffer;
 	
+	bool* _B;
 	int* _Timer = 0;
 	Vector2f _MousePos;
 	RenderWindow* _Window;

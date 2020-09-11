@@ -59,14 +59,14 @@ public:
     }
     void shoot(SzczerbiakBagienny& mob, Vector2f p, list<Bullet*>& b) {
         if (_RangeCircle.getGlobalBounds().contains(p)) {
-            Vector2f AimDir = p - _Sprite.getPosition();
-            Vector2f AimDirNorm = AimDir / sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2));
-            float angle = atan2(AimDir.y, AimDir.x) * 180 / 3.14;
-            cout << "kat: " << angle << endl;
-            _Sprite.setRotation(angle);
+            
             if (_CanShoot) {
                 if ((*_Timer % int(60 / _AttackSpeed) == 0)) {
-
+                    Vector2f AimDir = mob.getPos() - _Sprite.getPosition();
+                    Vector2f AimDirNorm = AimDir / sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2));
+                    float angle = atan2(AimDir.y, AimDir.x) * 180 / 3.14;
+                    
+                    _Sprite.setRotation(angle);
 
                     Bullet* bullet = new Bullet(mob, _Sprite.getPosition(), AimDirNorm, *_Timer, _Type, _Dmg);
                     b.push_back(bullet);
@@ -77,6 +77,7 @@ public:
     }
 
 private:
+
     bool _CanShoot = true;
     int* _Timer;
     int _Cost = 10;
@@ -86,8 +87,8 @@ private:
     Sprite _Sprite;
     Texture _Texture;
     CircleShape _RangeCircle;
-    int _Dmg = 50;
-    float _AttackSpeed = 1.0;
+    int _Dmg = 10;
+    float _AttackSpeed = 3.0;
 
 };
 
