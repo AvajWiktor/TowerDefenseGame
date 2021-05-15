@@ -41,66 +41,80 @@ public:
 	{
 		_PlayerGold += g;
 	}
+	void DisplayStats()
+	{
+		string s = to_string(_PlayerHp);
+		_PlayerHpTxt.setString(s);
+		_PlayerHpTxt.setCharacterSize(15);
+		_PlayerHpTxt.setPosition(89, 15);
+		_Window->draw(_PlayerHpTxt);
+
+		s = to_string(_PlayerGold);
+		_PlayerGoldTxt.setString("Gold : " + s);
+		_PlayerGoldTxt.setCharacterSize(15);
+		_PlayerGoldTxt.setPosition(815, 20);
+		_Window->draw(_PlayerGoldTxt);
+
+		s = to_string(_PlayerScore);
+		_PlayerScoreTxt.setString(s);
+		_PlayerScoreTxt.setCharacterSize(15);
+		_PlayerScoreTxt.setPosition(1135, 20);
+		_Window->draw(_PlayerScoreTxt);
+	}
+	void DrawHpBar()
+	{
+		for (int i = 0; i < _PlayerHp; i++)
+		{
+			_Window->draw(*_HpBar[i]);
+		}
+	}
+	void DrawTowersIcons()
+	{
+		for (auto itr = _GunInterface.begin(); itr != _GunInterface.end(); itr++)
+		{
+			_Window->draw((*itr)->getSprite());
+		}
+	}
+	void HandleChosingTower()
+	{
+		_MousePos = Vector2f(Mouse::getPosition(*_Window)); //pobieranie pozycji myszki wzgledem okna gry
+		if ((_GunInterface[0])->collision(_MousePos) && (_GunInterface[0]->getCost() <= _PlayerGold))
+		{
+			changeCursor(true);
+			if (Mouse::isButtonPressed(Mouse::Left)) _ChosenTower = new Gun(_MousePos.x, _MousePos.y, *_Timer);
+		}
+		else if ((_GunInterface[1])->collision(_MousePos) && (_GunInterface[1]->getCost() <= _PlayerGold))
+		{
+			changeCursor(true);
+			if (Mouse::isButtonPressed(Mouse::Left)) _ChosenTower = new Rocket(_MousePos.x, _MousePos.y, *_Timer);
+		}
+		else if ((_GunInterface[2])->collision(_MousePos) && (_GunInterface[2]->getCost() <= _PlayerGold))
+		{
+			changeCursor(true);
+			if (Mouse::isButtonPressed(Mouse::Left)) _ChosenTower = new Plasma(_MousePos.x, _MousePos.y, *_Timer);
+		}
+		else
+		{
+			changeCursor(false);
+			if (Mouse::isButtonPressed(Mouse::Right)) _ChosenTower = NULL;
+		}
+	}
+
 	bool DrawInterface() 
 	{
 		if (_PlayerHp <= 0) return true;
 		else 
 		{
 			_Window->draw(_BackGroundSprite);
-			_MousePos = Vector2f(Mouse::getPosition(*_Window)); //pobieranie pozycji myszki wzgledem okna gry
-
-			for (int i = 0; i < _PlayerHp; i++) //rysowanie paskow zdrowia w zaleznosci od posiadanego hp przez gracza
-			{
-				_Window->draw(*_HpBar[i]);
-			}
-
+			//rysowanie paskow zdrowia w zaleznosci od posiadanego hp przez gracza
+			DrawHpBar();
 			//wyswietlanie hp oraz golda czcionka
-			string s = to_string(_PlayerHp);
-			_PlayerHpTxt.setString(s);
-			_PlayerHpTxt.setCharacterSize(15);
-			_PlayerHpTxt.setPosition(89, 15);
-			_Window->draw(_PlayerHpTxt);
-
-			s = to_string(_PlayerGold);
-			_PlayerGoldTxt.setString("Gold : " + s);
-			_PlayerGoldTxt.setCharacterSize(15);
-			_PlayerGoldTxt.setPosition(815, 20);
-			_Window->draw(_PlayerGoldTxt);
-
-			s = to_string(_PlayerScore);
-			_PlayerScoreTxt.setString(s);
-			_PlayerScoreTxt.setCharacterSize(15);
-			_PlayerScoreTxt.setPosition(1135, 20);
-			_Window->draw(_PlayerScoreTxt);
-
+			DisplayStats();
 			//rysowanie ikon wiezyczek w menu
-			for (auto itr = _GunInterface.begin(); itr != _GunInterface.end(); itr++)
-			{
-				_Window->draw((*itr)->getSprite());
-			}
-
+			DrawTowersIcons();
 			//sprawdzanie czy gracz najechal myszka na ktorys z elementow menu, zmiana rodzaju kursora w przypadku najechania 
 			//oraz "przyklejenie" wybranej broni do kursora podczas klikniecia LPM
-			if ((_GunInterface[0])->collision(_MousePos)&&(_GunInterface[0]->getCost()<=_PlayerGold)) 
-			{
-				changeCursor(true);
-				if (Mouse::isButtonPressed(Mouse::Left)) _ChosenTower = new Gun(_MousePos.x, _MousePos.y, *_Timer);
-			}
-			else if ((_GunInterface[1])->collision(_MousePos) && (_GunInterface[1]->getCost() <= _PlayerGold)) 
-			{
-				changeCursor(true);
-				if (Mouse::isButtonPressed(Mouse::Left)) _ChosenTower = new Rocket(_MousePos.x, _MousePos.y, *_Timer);
-			}
-			else if ((_GunInterface[2])->collision(_MousePos) && (_GunInterface[2]->getCost() <= _PlayerGold)) 
-			{
-				changeCursor(true);
-				if (Mouse::isButtonPressed(Mouse::Left)) _ChosenTower = new Plasma(_MousePos.x, _MousePos.y, *_Timer);
-			}
-			else 
-			{
-				changeCursor(false);
-				if (Mouse::isButtonPressed(Mouse::Right)) _ChosenTower = NULL;
-			}
+			HandleChosingTower();
 
 			//w przypadku gdy jaka wieza jest wybrana nastepuje wyswietlenie sprite oraz podazanie za kursorem
 			if (_QuitButtonSprite.getGlobalBounds().contains(_MousePos)) 
