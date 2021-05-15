@@ -169,10 +169,7 @@ public:
 	}
 	void HandleBullets() 
 	{
-		for (auto itr = _Bullets.begin(); itr != _Bullets.end(); itr++)
-		{
-
-		}
+		//for (auto itr = _Bullets.begin(); itr != _Bullets.end(); itr++) {}
 	}
 	void HandleTowers() 
 	{

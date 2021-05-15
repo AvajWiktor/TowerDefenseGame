@@ -4,9 +4,9 @@
 class Rocket :
     public Tower
 {
-
 public:
-    Rocket(int x, int y, int &t) {
+    Rocket(int x, int y, int &t) 
+    {
         _Timer = &t;
         _Texture.loadFromFile("grafiki/gun-2.png");
         _Sprite.setTexture(_Texture);
@@ -20,44 +20,53 @@ public:
         _RangeCircle.setOrigin(_Range , _Range);
         _RangeCircle.setPosition(x, y);
     }
-    
-
-    void draw(RenderWindow& window) {
+    void draw(RenderWindow& window) 
+    {
         window.draw(_Sprite);
         window.draw(_RangeCircle);
         _CanShoot = true;
         _Cost = 1 + (_TowerLevel - 1) * 30;
     }
-    int getLvl() {
+    int getLvl() 
+    {
         return _TowerLevel;
     }
-    int getType() {
+    int getType() 
+    {
         return _Type;
     }
-    int getCost() {
+    int getCost() 
+    {
         return _Cost;
     }
-    void upgrade() {
+    void upgrade() 
+    {
         _TowerLevel++;
         _Dmg += _TowerLevel * _Dmg;
         _Range += 100;
         _AttackSpeed += 0.1;
     }
-    Sprite getSprite() {
+    Sprite getSprite() 
+    {
         return _Sprite;
     }
-    bool collision( Vector2f v) {
+    bool collision( Vector2f v) 
+    {
         if (_Sprite.getGlobalBounds().contains(v)) return true;
         else return false;
     }
-    void setPosition(Vector2f p) {
+    void setPosition(Vector2f p) 
+    {
         _Sprite.setPosition(p);
     }
-    void shoot(SzczerbiakBagienny& mob, Vector2f p, list<Bullet*>& b) {
-        if (_RangeCircle.getGlobalBounds().contains(p)) {
-
-            if (_CanShoot) {
-                if ((*_Timer % int(60 / _AttackSpeed) == 0)) {
+    void shoot(SzczerbiakBagienny& mob, Vector2f p, list<Bullet*>& b) 
+    {
+        if (_RangeCircle.getGlobalBounds().contains(p)) 
+        {
+            if (_CanShoot) 
+            {
+                if ((*_Timer % int(60 / _AttackSpeed) == 0)) 
+                {
                     Vector2f AimDir = mob.getPos() - _Sprite.getPosition();
                     Vector2f AimDirNorm = Vector2f(AimDir.x / sqrt(pow(float(AimDir.x), 2) + pow(float(AimDir.y), 2)), AimDir.y/sqrt(pow(float(AimDir.x), 2) + pow(float(AimDir.y), 2)));
                     float angle = atan2(float(AimDir.y), float(AimDir.x)) * 180.0 / 3.14;
@@ -72,7 +81,6 @@ public:
         }
     }
 
-
 private:
     bool _CanShoot = true;
     int* _Timer;
@@ -85,6 +93,5 @@ private:
     CircleShape _RangeCircle;
     int _Dmg = 50;
     float _AttackSpeed = 1.0;
-
 };
 
