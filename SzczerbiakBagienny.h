@@ -62,7 +62,6 @@ public:
 							monster_.setPosition(pos.x, monster_.getPosition().y);
 							monster_.setRotation(90);
 							velocity_ = Vector2f(0.0, -1.0);
-
 						}
 						break;
 					}
