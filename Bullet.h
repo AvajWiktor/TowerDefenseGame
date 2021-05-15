@@ -32,7 +32,7 @@ public:
 	bool animate() {
 		
 		Vector2f AimDir = _Mob->getPos() - _BulletSprite.getPosition();
-		Vector2f AimDirNorm = AimDir / sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2));
+		Vector2f AimDirNorm = Vector2f(AimDir.x/sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2)),AimDir.y/ sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2)));
 		_Velocity = Vector2f(AimDirNorm.x*5, AimDirNorm.y*5);
 		_BulletSprite.move(_Velocity);
 		return shoot();

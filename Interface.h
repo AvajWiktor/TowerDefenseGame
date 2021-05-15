@@ -7,7 +7,8 @@
 class Interface
 {
 public:
-	Interface(int hp, string fontDirection, RenderWindow &w, int &t, bool &b) {
+	Interface(int hp, string fontDirection, RenderWindow &w, int &t, bool &b) 
+	{
 		_B = &b;
 		_Timer = &t;
 		_Window = &w;
@@ -26,28 +27,25 @@ public:
 		_QuitButtonSprite.setTexture(_QuitButtonTextureOff);
 		_QuitButtonSprite.setOrigin(_QuitButtonTextureOff.getSize().x/2.0, _QuitButtonTextureOff.getSize().y/2.0);
 		_QuitButtonSprite.setPosition(1507, 28);
-		
-		
 		_BackGroundTexture.loadFromFile("grafiki/tlo1.png");
 		_BackGroundSprite.setTexture(_BackGroundTexture);
+
 		MakeGunInterface();
-
 		MakeHpBar();
-		
 	}
-
-	
-	void LoseHp() {
+	void LoseHp() 
+	{
 		if (_PlayerHp > 0)_PlayerHp--;
 	}
-	void EarnMoney(int g) {
+	void EarnMoney(int g) 
+	{
 		_PlayerGold += g;
 	}
-	bool DrawInterface() {
-		
+	bool DrawInterface() 
+	{
 		if (_PlayerHp <= 0) return true;
-		else {
-
+		else 
+		{
 			_Window->draw(_BackGroundSprite);
 			_MousePos = Vector2f(Mouse::getPosition(*_Window)); //pobieranie pozycji myszki wzgledem okna gry
 
@@ -78,111 +76,104 @@ public:
 			//rysowanie ikon wiezyczek w menu
 			for (auto itr = _GunInterface.begin(); itr != _GunInterface.end(); itr++)
 			{
-
 				_Window->draw((*itr)->getSprite());
 			}
+
 			//sprawdzanie czy gracz najechal myszka na ktorys z elementow menu, zmiana rodzaju kursora w przypadku najechania 
 			//oraz "przyklejenie" wybranej broni do kursora podczas klikniecia LPM
-			if ((_GunInterface[0])->collision(_MousePos)&&(_GunInterface[0]->getCost()<=_PlayerGold)) {
-
+			if ((_GunInterface[0])->collision(_MousePos)&&(_GunInterface[0]->getCost()<=_PlayerGold)) 
+			{
 				changeCursor(true);
-				if (Mouse::isButtonPressed(Mouse::Left)) {
-
-					_ChosenTower = new Gun(_MousePos.x, _MousePos.y, *_Timer);
-				}
+				if (Mouse::isButtonPressed(Mouse::Left)) _ChosenTower = new Gun(_MousePos.x, _MousePos.y, *_Timer);
 			}
-			else if ((_GunInterface[1])->collision(_MousePos) && (_GunInterface[1]->getCost() <= _PlayerGold)) {
-
+			else if ((_GunInterface[1])->collision(_MousePos) && (_GunInterface[1]->getCost() <= _PlayerGold)) 
+			{
 				changeCursor(true);
-				if (Mouse::isButtonPressed(Mouse::Left)) {
-
-					_ChosenTower = new Rocket(_MousePos.x, _MousePos.y, *_Timer);
-				}
+				if (Mouse::isButtonPressed(Mouse::Left)) _ChosenTower = new Rocket(_MousePos.x, _MousePos.y, *_Timer);
 			}
-			else if ((_GunInterface[2])->collision(_MousePos) && (_GunInterface[2]->getCost() <= _PlayerGold)) {
-
+			else if ((_GunInterface[2])->collision(_MousePos) && (_GunInterface[2]->getCost() <= _PlayerGold)) 
+			{
 				changeCursor(true);
-				if (Mouse::isButtonPressed(Mouse::Left)) {
-
-					_ChosenTower = new Plasma(_MousePos.x, _MousePos.y, *_Timer);
-				}
+				if (Mouse::isButtonPressed(Mouse::Left)) _ChosenTower = new Plasma(_MousePos.x, _MousePos.y, *_Timer);
 			}
-			else {
+			else 
+			{
 				changeCursor(false);
-				if (Mouse::isButtonPressed(Mouse::Right)) {
-					_ChosenTower = NULL;
-				}
+				if (Mouse::isButtonPressed(Mouse::Right)) _ChosenTower = NULL;
 			}
+
 			//w przypadku gdy jaka wieza jest wybrana nastepuje wyswietlenie sprite oraz podazanie za kursorem
-
-
-			if (_QuitButtonSprite.getGlobalBounds().contains(_MousePos)) {
-
+			if (_QuitButtonSprite.getGlobalBounds().contains(_MousePos)) 
+			{
 				changeCursor(true);
 				_QuitButtonSprite.setTexture(_QuitButtonTextureOn);
 				_QuitButtonSprite.setScale(1.2, 1.2);
-				if (Mouse::isButtonPressed(Mouse::Left)) {
-					*_B=true;
 
-				}
+				if (Mouse::isButtonPressed(Mouse::Left)) *_B=true;
 			}
-			else {
-
+			else 
+			{
 				_QuitButtonSprite.setTexture(_QuitButtonTextureOff);
 				_QuitButtonSprite.setScale(1.0, 1.0);
 			}
 			_Window->draw(_QuitButtonSprite);
 			return false;
 		}
-
 	}
-	void buyTower(int g) {
+	void buyTower(int g) 
+	{
 		_PlayerGold -= g;
 	}
-	void HandleChosenTower() {
-		if (_ChosenTower != NULL) {
+	void HandleChosenTower() 
+	{
+		if (_ChosenTower != NULL) 
+		{
 			_IsChosen = true;
 			_ChosenTower->setPosition(_MousePos);
 			_Window->draw(_ChosenTower->getSprite());
 		}
 		else _IsChosen = false;
 	}
-
-
-	bool collision(Sprite s1, Sprite s2) {
+	bool collision(Sprite s1, Sprite s2) 
+	{
 		if (s1.getGlobalBounds().intersects(s2.getGlobalBounds())) return true;
 		else return false;
 	}
-	bool collision(Sprite s, Vector2f v) {
+	bool collision(Sprite s, Vector2f v) 
+	{
 		if (s.getGlobalBounds().contains(v)) return true;
 		else return false;
 	}
-	void changeCursor(bool b) {
+	void changeCursor(bool b) 
+	{
 		Cursor c;
 		c.loadFromSystem(Cursor::Hand);
 
 		if (b) _Window->setMouseCursor(c);
-		else {
+		else 
+		{
 			c.loadFromSystem(Cursor::Arrow);
 			_Window->setMouseCursor(c);
 		}
 	}
-	int isChosen() {
+	int isChosen() 
+	{
 		if (_IsChosen) return _ChosenTower->getType();
 		else return 0;
 	}
-	void deleteChosenTower() {
+	void deleteChosenTower() 
+	{
 		_ChosenTower = NULL;
 	}
-	void killMonster(int g) {
+	void killMonster(int g) 
+	{
 		_PlayerGold += g;
 		_PlayerScore++;
 	}
 
-
 private:
-
-	void MakeHpBar() {
+	void MakeHpBar() 
+	{
 		for (int i = 0; i < _PlayerHp; i++)
 		{
 			Sprite* n = new Sprite(_PlayerHpTexture);
@@ -191,15 +182,14 @@ private:
 			_HpBar.push_back(n);
 		}
 	}
-	void MakeGunInterface() {
+	void MakeGunInterface() 
+	{
 		Gun *g = new Gun(1325, 104, *_Timer);
 		_GunInterface.push_back(g);
 		Rocket *r = new Rocket(1405, 104, *_Timer);
 		_GunInterface.push_back(r);
 		Plasma *p = new Plasma(1485, 104, *_Timer);
 		_GunInterface.push_back(p);
-
-
 	}
 	
 	bool* _B;
@@ -217,6 +207,5 @@ private:
 	bool _IsChosen = false;
 	Texture _PlayerHpTexture, _QuitButtonTextureOff, _QuitButtonTextureOn, _BackGroundTexture;
 	Sprite _QuitButtonSprite, _BackGroundSprite;
-	
 };
 

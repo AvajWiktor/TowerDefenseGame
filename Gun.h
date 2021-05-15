@@ -63,7 +63,7 @@ public:
             if (_CanShoot) {
                 if ((*_Timer % int(60 / _AttackSpeed) == 0)) {
                     Vector2f AimDir = mob.getPos() - _Sprite.getPosition();
-                    Vector2f AimDirNorm = AimDir / sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2));
+                    Vector2f AimDirNorm = Vector2f(AimDir.x / sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2)), AimDir.y/ sqrt(pow(AimDir.x, 2) + pow(AimDir.y, 2)));
                     float angle = atan2(AimDir.y, AimDir.x) * 180 / 3.14;
                     
                     _Sprite.setRotation(angle);
