@@ -154,9 +154,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="Interface.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="MapField.h" />
     <ClInclude Include="Mob.h" />
     <ClInclude Include="Plasma.h" />
     <ClInclude Include="Rocket.h" />

@@ -9,146 +9,97 @@
 using namespace sf;
 using namespace std;
 
-//Obiekty i zmienne
-RenderWindow window(sf::VideoMode(1545, 720), "Tower Defense");
+Texture btnT1, btnT2, btnE1, btnE2;
+Sprite btnSprite, btnESprite ;
+bool isMenu = true;
 
-vector<Map*> mapGround;
-vector<SzczerbiakBagienny*> mobs;
-int timer = 0;
-int playerHP = 10;
-int playerGold = 0;
-Interface infce(playerHP, "Starjedi.ttf");
+void makeMenu() {
+	btnT1.loadFromFile("grafiki/start.png");
+	btnT2.loadFromFile("grafiki/start-on.png");
+	btnE1.loadFromFile("grafiki/EXIT.png");
+	btnE2.loadFromFile("grafiki/EXIT-on.png");
 
+	btnSprite.setTexture(btnT1);
+	btnSprite.setOrigin(btnT1.getSize().x/2.0, btnT1.getSize().y/2.0);
+	btnSprite.setPosition(1546/2.0, 720/3.0);
+	btnSprite.setScale(1.5,1.5);
 
-
-
-
-//Funkcje
-void ReadMapFile() {
-	vector<string> map;
-	fstream file;
-	file.open("map.txt", std::ios::in);
-
-	while (!file.eof()) {
-		string line;
-		getline(file, line);
-		if (line[0] == '*') break;
-		else map.push_back(line);
-	}
-	file.close();
-
-	for (int i = 0; i < 12; i++) {
-		for (int j = 0; j < 27; j++)
-		{
-			/*if (map[i][j] == '2') {
-				cTowerPlace* towerPlace = new cTowerPlace(Vector2f(20 + j * 40, 20 + i * 40));
-				towerPlaces.push_back(towerPlace);
-			}*/
-			if (map[i][j] != '0') {
-				Map* ground = new Map(72 + j * 44, 83 + i * 51, map[i][j]);
-
-				mapGround.push_back(ground);
-
-			}
-
-			else {
-
-			}
-		}
-	}
+	btnESprite.setTexture(btnE1);
+	btnESprite.setOrigin(btnE1.getSize().x / 2.0, btnT1.getSize().y / 2.0);
+	btnESprite.setPosition(1546 / 2.0, 720 / 2.0);
+	btnESprite.setScale(1.5, 1.5);
 }
-void SpawnMobs() {
-	if (timer % 180 == 0) {
-		Vector2f xy = Vector2f(mapGround[19]->getPosition());
-		SzczerbiakBagienny* m = new SzczerbiakBagienny(Vector2f(xy.x, xy.y));
-		mobs.push_back(m);
-	}
-
-	
-}
-void HandleMoving() {
-
-
-	for (int i = 0; i < mapGround.size(); i++)
+void handleMenu(RenderWindow &w) 
+{
+	Cursor c;
+	if (btnSprite.getGlobalBounds().contains(Vector2f(Mouse::getPosition(w)))) 
 	{
-		for (auto itr = mobs.begin(); itr != mobs.end(); itr++)
-		{
-			(*itr)->animate(mapGround[i]->whatToDo(), mapGround[i]->getPosition(), mapGround[i]->getMapSprite());
-		}
-
-	}
-	for (auto itr = mobs.begin(); itr != mobs.end();)
-	{
-		(*itr)->animate();
-		if ((*itr)->ifSurvive()) {
-
-				playerHP -= 1;
-				infce.LoseHp(); 
-				itr = mobs.erase(itr);
-			
-		}
-		else itr++;
+		btnSprite.setTexture(btnT2);
+		c.loadFromSystem(Cursor::Hand);
 		
+		if (Mouse::isButtonPressed(Mouse::Left)) 
+		{
+			isMenu = false;
+		}
 	}
-
-
-
-}
-void DrawMap() {
-
-	for (int i = 0; i != mapGround.size(); i++)
+	else if (btnESprite.getGlobalBounds().contains(Vector2f(Mouse::getPosition(w)))) 
 	{
-		window.draw(mapGround[i]->getMapSprite());
+		btnESprite.setTexture(btnE2);
+		c.loadFromSystem(Cursor::Hand);
+
+		if (Mouse::isButtonPressed(Mouse::Left)) 
+		{
+			w.close();
+		}
 	}
-
-}
-void DrawinEnemies() {
-
-	for (auto itr = mobs.begin(); itr != mobs.end(); itr++)
+	else 
 	{
-		(*itr)->draw(window);
+		btnSprite.setTexture(btnT1);
+		btnESprite.setTexture(btnE1);
+		c.loadFromSystem(Cursor::Arrow);
 	}
-}
 
+	w.setMouseCursor(c);
+	w.draw(btnSprite);
+	w.draw(btnESprite);
+}
 
 
 int main() {
-	
-	ReadMapFile();
-	window.setFramerateLimit(60);
-	sf::Texture background;
-	background.loadFromFile("grafiki/tlo1.png");
-	sf::Sprite backgroundSprite(background);
-	
+	RenderWindow window(sf::VideoMode(1545, 720), "Tower Defense");
 
+	makeMenu();
 
-	while (window.isOpen()) {
-		if (timer == 181) timer = 1;
+	int timer = 0;
+	int playerHP = 10;
+	Interface infce(playerHP, "Starjedi.ttf", window, timer, isMenu);
+	Map mapa(window, infce, timer);
+
+	while (window.isOpen()) 
+	{
 		window.clear();
 		sf::Event event;
-		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed) {
+		while (window.pollEvent(event)) 
+		{
+			if (event.type == sf::Event::Closed) 
+			{
 				window.close();
 			}
 		}
-		//obsluga gry
-		SpawnMobs();
-		HandleMoving();
-		//rysowanie
-		window.draw(backgroundSprite);
-		DrawMap();
-		infce.DrawInterface(window);
-		DrawinEnemies();
+
+		if (isMenu) 
+		{
+			handleMenu(window);
+		}
+		else 
+		{
+			//rysowanie
+			if (infce.DrawInterface()) break;
+
+			mapa.HandleWholeMap();
+			timer++;
+		}
 		window.display();
-		timer++;
 	}
-
-
-
-
-
-
-
-
 	return 0;
 }
