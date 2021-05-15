@@ -12,9 +12,7 @@ public:
 			setTex();
 			position_ = position;
 			monster_.setPosition(position_);
-			
 			lvl_ = 1 + *timer_ / 600;
-			
 			gold_ = lvl_;
 			hp_ = lvl_*50;
 		}
