@@ -3,12 +3,6 @@
 class Mob
 {
 public:
-	Mob() {
-
-	}
-	~Mob() {
-
-	}
 private:
 };
 

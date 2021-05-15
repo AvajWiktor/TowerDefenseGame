@@ -22,6 +22,5 @@ public:
 	virtual void shoot(SzczerbiakBagienny& mob, Vector2f p, list<Bullet*>& b) = 0;
 	virtual void draw(RenderWindow &window) = 0;
 	virtual int getCost() = 0;
-	
 };
 
