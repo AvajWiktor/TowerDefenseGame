@@ -3,8 +3,6 @@
 class Gun :
     public Tower
 {
-
-
 public:
     Gun(int x, int y, int &t) 
     {
